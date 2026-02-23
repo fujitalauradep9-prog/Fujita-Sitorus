@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desa Wisata Carangsari – Data Kunjungan Wisatawan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brown-deep: #1E0E05;
+  --brown: #3D1F0A;
+  --brown-mid: #6B3A1F;
+  --gold: #C8872A;
+  --gold-bright: #F0B84A;
+  --gold-pale: #FAE8C0;
+  --cream: #FBF6ED;
+  --cream-dark: #F0E6D0;
+  --sage: #4A6E3B;
+  --sage-light: #7AA664;
+  --terracotta: #B5481E;
+  --sky: #5B8FA8;
+  --text: #2A1505;
+  --muted: #8A6B50;
+  --border: rgba(200,135,42,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+
+/* HERO */
+.hero {
+  position: relative; height: 100vh; min-height: 600px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; text-align: center;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(30,14,5,0.3) 0%, rgba(30,14,5,0.65) 60%, rgba(30,14,5,0.9) 100%),
+    url('https://jadesta.kemenpar.go.id/imgpost/98133.jpg') center/cover no-repeat;
+}
+.hero-content { position: relative; z-index: 2; padding: 20px; }
+.hero-logo {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(200,135,42,0.15); border: 2px solid rgba(200,135,42,0.5);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; font-size: 36px; backdrop-filter: blur(4px);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(200,135,42,0.3)} 50%{box-shadow:0 0 0 16px rgba(200,135,42,0)} }
+.hero-label {
+  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold-bright);
+  background: rgba(200,135,42,0.15); border: 1px solid rgba(200,135,42,0.35);
+  padding: 7px 20px; border-radius: 100px; margin-bottom: 20px; backdrop-filter: blur(4px);
+}
+.hero h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(40px,8vw,82px); font-weight:700; color:#fff; line-height:1.05; margin-bottom:10px; }
+.hero h1 em { color: var(--gold-bright); font-style:italic; }
+.hero p { color:rgba(255,255,255,0.7); font-size:clamp(14px,2vw,17px); margin-bottom:8px; }
+.hero-award {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(200,135,42,0.2); border:1px solid rgba(200,135,42,0.4);
+  border-radius:100px; padding:8px 18px; font-size:13px; color:var(--gold-pale); font-weight:600; margin-top:12px; backdrop-filter:blur(4px);
+}
+.scroll-cue {
+  position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+  z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
+  color:rgba(255,255,255,0.5); font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  animation: bounce 2s ease-in-out infinite;
+}
+.scroll-cue::after { content:''; display:block; width:1px; height:40px; background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent); }
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+/* PHOTO STRIP */
+.photo-strip { display:grid; grid-template-columns:2fr 1fr 1fr; gap:4px; height:280px; overflow:hidden; }
+.photo-strip img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease; display:block; }
+.photo-strip img:hover { transform:scale(1.04); }
+.photo-strip-col { display:grid; gap:4px; }
+
+/* MAIN */
+main { max-width:760px; margin:0 auto; padding:60px 20px 80px; }
+
+/* SECTION HEADER */
+.section-header { text-align:center; margin-bottom:48px; }
+.section-tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:12px; }
+.section-header h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,5vw,46px); font-weight:700; color:var(--brown-deep); line-height:1.2; }
+.section-header p { color:var(--muted); font-size:15px; margin-top:8px; }
+
+/* FIELD CARD */
+.field-card {
+  background:#fff; border-radius:20px; padding:32px 36px; margin-bottom:20px;
+  border:1px solid var(--border); box-shadow:0 2px 16px rgba(30,14,5,0.06);
+  transition:box-shadow 0.3s, transform 0.3s; position:relative; overflow:hidden;
+  animation:fadeUp 0.4s ease both;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.field-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+  background:linear-gradient(to bottom,var(--gold),var(--sage)); border-radius:4px 0 0 4px;
+  opacity:0; transition:opacity 0.3s;
+}
+.field-card:focus-within { box-shadow:0 8px 32px rgba(200,135,42,0.15); transform:translateY(-2px); }
+.field-card:focus-within::before { opacity:1; }
+.field-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--brown-deep); margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.field-icon { width:36px; height:36px; background:var(--gold-pale); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+.req { color:var(--terracotta); margin-left:2px; }
+.field-helper { font-size:12px; color:var(--muted); margin-top:6px; }
+
+/* INPUTS */
+input[type=text], select, textarea {
+  width:100%; padding:13px 16px; border:1.5px solid var(--cream-dark); border-radius:12px;
+  font-family:'Plus Jakarta Sans',sans-serif; font-size:14.5px; color:var(--text); background:var(--cream);
+  outline:none; transition:border-color 0.2s, background 0.2s, box-shadow 0.2s; appearance:none;
+}
+input[type=text]:focus, select:focus, textarea:focus { border-color:var(--gold); background:#fff; box-shadow:0 0 0 4px rgba(200,135,42,0.1); }
+select {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A6B50' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center; padding-right:40px; cursor:pointer;
+}
+
+/* PILL */
+.pill-group { display:flex; flex-wrap:wrap; gap:10px; }
+.pill {
+  display:inline-flex; align-items:center; gap:7px; padding:10px 20px;
+  border:1.5px solid var(--cream-dark); border-radius:100px; cursor:pointer;
+  font-size:14px; font-weight:500; color:var(--muted); background:var(--cream); transition:all 0.2s; user-select:none;
+}
+.pill:hover { border-color:var(--gold); color:var(--brown); background:var(--gold-pale); }
+.pill.active { border-color:var(--gold); background:var(--gold-pale); color:var(--brown-deep); font-weight:700; box-shadow:inset 0 0 0 1px var(--gold); }
+.pill .dot { width:8px; height:8px; border-radius:50%; border:2px solid currentColor; transition:background 0.2s; }
+.pill.active .dot { background:var(--gold); border-color:var(--gold); }
+
+/* SLIDER */
+.slider-display { display:flex; align-items:baseline; gap:4px; margin-bottom:18px; }
+.slider-num { font-family:'Cormorant Garamond',serif; font-size:52px; font-weight:700; color:var(--gold); line-height:1; }
+.slider-unit { font-size:16px; color:var(--muted); font-weight:500; }
+input[type=range] { width:100%; appearance:none; height:6px; background:var(--cream-dark); border-radius:100px; outline:none; cursor:pointer; border:none; box-shadow:none; padding:0; }
+input[type=range]::-webkit-slider-thumb { appearance:none; width:24px; height:24px; border-radius:50%; background:var(--gold); border:3px solid #fff; box-shadow:0 2px 10px rgba(200,135,42,0.5); cursor:pointer; transition:transform 0.15s; }
+input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
+.range-marks { display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-top:8px; }
+
+/* REGION TABS */
+.region-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.region-tab { padding:7px 16px; border:1.5px solid var(--cream-dark); border-radius:100px; font-size:12.5px; font-weight:600; cursor:pointer; transition:all 0.2s; color:var(--muted); background:var(--cream); }
+.region-tab.active { background:var(--brown); color:var(--gold-pale); border-color:var(--brown); }
+.region-tab:hover:not(.active) { border-color:var(--gold); color:var(--brown); }
+.asal-select-wrap { display:none; }
+.asal-select-wrap.show { display:block; }
+
+/* TAGS */
+.tag-group { display:flex; flex-wrap:wrap; gap:8px; }
+.tag {
+  display:inline-flex; align-items:center; gap:6px; padding:8px 16px;
+  border:1.5px solid var(--cream-dark); border-radius:10px; font-size:13.5px;
+  font-weight:500; cursor:pointer; color:var(--muted); background:var(--cream); transition:all 0.2s; user-select:none;
+}
+.tag:hover { border-color:var(--sage); color:var(--sage); background:rgba(74,110,59,0.06); }
+.tag.active { border-color:var(--sage); background:rgba(74,110,59,0.1); color:var(--sage); font-weight:700; }
+.tag .check-icon { width:16px; height:16px; border-radius:4px; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:10px; transition:all 0.2s; }
+.tag.active .check-icon { background:var(--sage); color:#fff; border-color:var(--sage); }
+
+/* LAIN FIELD */
+.lain-field { margin-top:12px; display:none; }
+.lain-field.show { display:block; }
+
+/* SUBMIT */
+.submit-wrap { background:var(--brown-deep); border-radius:24px; padding:40px 36px; text-align:center; margin-top:32px; position:relative; overflow:hidden; }
+.submit-wrap::before { content:''; position:absolute; top:-80px; left:-80px; width:300px; height:300px; background:radial-gradient(circle,rgba(200,135,42,0.2),transparent 70%); pointer-events:none; }
+.submit-wrap h3 { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:700; color:#fff; margin-bottom:8px; position:relative; }
+.submit-wrap p { color:rgba(255,255,255,0.55); font-size:14px; margin-bottom:28px; position:relative; }
+.btn-submit {
+  display:inline-flex; align-items:center; gap:10px; padding:16px 48px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-bright)); color:var(--brown-deep);
+  border:none; border-radius:14px; font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:700;
+  cursor:pointer; transition:all 0.25s; position:relative; box-shadow:0 6px 24px rgba(200,135,42,0.4);
+}
+.btn-submit:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(200,135,42,0.5); }
+
+/* ORNAMENT */
+.ornament-divider { display:flex; align-items:center; gap:16px; margin:60px 0 48px; color:var(--gold); font-size:20px; }
+.ornament-divider::before, .ornament-divider::after { content:''; flex:1; height:1px; background:linear-gradient(to right,transparent,var(--gold-pale),transparent); }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:32px; }
+@media(max-width:600px){ .stats-grid{grid-template-columns:repeat(2,1fr);} }
+.stat-box { background:var(--brown-deep); border-radius:18px; padding:22px 18px; text-align:center; position:relative; overflow:hidden; }
+.stat-box::after { content:''; position:absolute; bottom:-20px; right:-20px; width:80px; height:80px; background:rgba(200,135,42,0.1); border-radius:50%; }
+.stat-num { font-family:'Cormorant Garamond',serif; font-size:40px; font-weight:700; color:var(--gold-bright); line-height:1; }
+.stat-lbl { font-size:11px; color:rgba(250,232,192,0.6); font-weight:600; letter-spacing:0.5px; margin-top:5px; text-transform:uppercase; }
+
+/* TOOLBAR */
+.toolbar { display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.btn-tool { display:inline-flex; align-items:center; gap:7px; padding:9px 20px; border:1.5px solid var(--cream-dark); border-radius:10px; background:#fff; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+.btn-tool:hover { border-color:var(--gold); color:var(--brown); }
+
+/* TABLE */
+.table-wrap { overflow-x:auto; border-radius:16px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead { background:var(--brown-deep); }
+thead th { padding:13px 14px; text-align:left; color:var(--gold-pale); font-weight:600; font-size:11px; letter-spacing:0.7px; text-transform:uppercase; white-space:nowrap; }
+tbody tr { border-bottom:1px solid rgba(200,135,42,0.08); transition:background 0.15s; }
+tbody tr:hover { background:rgba(200,135,42,0.04); }
+tbody tr:last-child { border-bottom:none; }
+tbody td { padding:13px 14px; color:var(--text); vertical-align:top; }
+.no-data { text-align:center; padding:56px 20px; color:var(--muted); font-size:14px; }
+.no-icon { font-size:40px; margin-bottom:10px; }
+.badge { display:inline-block; padding:3px 10px; border-radius:100px; font-size:11.5px; font-weight:700; }
+.badge-l { background:rgba(91,143,168,0.15); color:var(--sky); }
+.badge-p { background:rgba(181,72,30,0.12); color:var(--terracotta); }
+
+/* TOAST */
+.toast { position:fixed; bottom:28px; right:28px; background:var(--brown-deep); color:var(--cream); padding:14px 22px; border-radius:14px; font-size:14px; font-weight:500; border-left:4px solid var(--gold); box-shadow:0 10px 40px rgba(30,14,5,0.35); display:flex; align-items:center; gap:10px; transform:translateX(calc(100% + 40px)); opacity:0; transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; max-width:320px; }
+.toast.show { transform:translateX(0); opacity:1; }
+
+@media(max-width:560px) { .field-card{padding:24px 18px;} .submit-wrap{padding:28px 20px;} .photo-strip{height:160px;} }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-logo">🏝️</div>
+    <div class="hero-label">Formulir Data Wisatawan</div>
+    <h1>Desa Wisata<br><em>Carangsari</em></h1>
+    <p>Kecamatan Petang, Kabupaten Badung, Bali</p>
+    <div class="hero-award">🏆 Juara 1 ADWI 2021 – Kemenparekraf RI</div>
+  </div>
+  <div class="scroll-cue">Gulir ke bawah</div>
+</div>
+
+<!-- PHOTO STRIP -->
+<div class="photo-strip">
+  <img src="https://jadesta.kemenpar.go.id/imgpost/98133.jpg" alt="Desa Wisata Carangsari"
+    onerror="this.src='https://sita.badungkab.go.id/storage/image/destination/66bc0d8a9d820.jpg'">
+  <div class="photo-strip-col">
+    <img src="https://sita.badungkab.go.id/storage/image/destination/66bc0d8a9d820.jpg" alt="Carangsari"
+      onerror="this.style.background='#3D1F0A'">
+    <img src="https://sita.badungkab.go.id/storage/image/destination/66bc0e2d7caf7.jpg" alt="Budaya Carangsari"
+      onerror="this.style.background='#4A6E3B'">
+  </div>
+</div>
+
+<!-- MAIN FORM -->
+<main>
+  <div class="section-header">
+    <div class="section-tag">✦ Pendataan Wisatawan</div>
+    <h2>Formulir Data Kunjungan</h2>
+    <p>Isi seluruh pertanyaan di bawah ini dengan lengkap dan jujur</p>
+  </div>
+
+  <!-- 1. NAMA -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">👤</span> Nama Lengkap <span class="req">*</span></div>
+    <input type="text" id="nama" placeholder="Contoh: I Made Surya Antara">
+  </div>
+
+  <!-- 2. ASAL -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">📍</span> Daerah Asal <span class="req">*</span></div>
+    <p class="field-helper" style="margin-bottom:14px">Pilih kategori pulau/negara, kemudian pilih wilayah spesifik</p>
+    <div class="region-tabs">
+      <div class="region-tab active" onclick="switchRegion('bali',this)">🏝️ Bali</div>
+      <div class="region-tab" onclick="switchRegion('jawa',this)">☕ Jawa</div>
+      <div class="region-tab" onclick="switchRegion('sumatera',this)">🌴 Sumatera</div>
+      <div class="region-tab" onclick="switchRegion('kalimantan',this)">🌳 Kalimantan</div>
+      <div class="region-tab" onclick="switchRegion('sulawesi',this)">🏔️ Sulawesi</div>
+      <div class="region-tab" onclick="switchRegion('nusa',this)">🌺 Nusa Tenggara</div>
+      <div class="region-tab" onclick="switchRegion('papua',this)">🦜 Papua &amp; Maluku</div>
+      <div class="region-tab" onclick="switchRegion('luar',this)">✈️ Luar Negeri</div>
+    </div>
+    <div id="asal-bali" class="asal-select-wrap show">
+      <select id="sel-bali"><option value="">-- Pilih Kabupaten/Kota --</option>
+        <option>Kab. Badung</option><option>Kota Denpasar</option><option>Kab. Gianyar</option>
+        <option>Kab. Tabanan</option><option>Kab. Klungkung</option><option>Kab. Bangli</option>
+        <option>Kab. Karangasem</option><option>Kab. Buleleng</option><option>Kab. Jembrana</option>
+      </select>
+    </div>
+    <div id="asal-jawa" class="asal-select-wrap">
+      <select id="sel-jawa"><option value="">-- Pilih Provinsi --</option>
+        <option>DKI Jakarta</option><option>Jawa Barat</option><option>Banten</option>
+        <option>Jawa Tengah</option><option>DI Yogyakarta</option><option>Jawa Timur</option>
+      </select>
+    </div>
+    <div id="asal-sumatera" class="asal-select-wrap">
+      <select id="sel-sumatera"><option value="">-- Pilih Provinsi --</option>
+        <option>Aceh</option><option>Sumatera Utara</option><option>Sumatera Barat</option>
+        <option>Riau</option><option>Kepulauan Riau</option><option>Jambi</option>
+        <option>Sumatera Selatan</option><option>Bangka Belitung</option>
+        <option>Bengkulu</option><option>Lampung</option>
+      </select>
+    </div>
+    <div id="asal-kalimantan" class="asal-select-wrap">
+      <select id="sel-kalimantan"><option value="">-- Pilih Provinsi --</option>
+        <option>Kalimantan Barat</option><option>Kalimantan Tengah</option>
+        <option>Kalimantan Selatan</option><option>Kalimantan Timur</option>
+        <option>Kalimantan Utara</option>
+      </select>
+    </div>
+    <div id="asal-sulawesi" class="asal-select-wrap">
+      <select id="sel-sulawesi"><option value="">-- Pilih Provinsi --</option>
+        <option>Sulawesi Utara</option><option>Gorontalo</option><option>Sulawesi Tengah</option>
+        <option>Sulawesi Barat</option><option>Sulawesi Selatan</option><option>Sulawesi Tenggara</option>
+      </select>
+    </div>
+    <div id="asal-nusa" class="asal-select-wrap">
+      <select id="sel-nusa"><option value="">-- Pilih Provinsi --</option>
+        <option>Nusa Tenggara Barat (NTB)</option><option>Nusa Tenggara Timur (NTT)</option>
+      </select>
+    </div>
+    <div id="asal-papua" class="asal-select-wrap">
+      <select id="sel-papua"><option value="">-- Pilih Provinsi --</option>
+        <option>Maluku</option><option>Maluku Utara</option><option>Papua</option>
+        <option>Papua Barat</option><option>Papua Barat Daya</option>
+        <option>Papua Pegunungan</option><option>Papua Selatan</option><option>Papua Tengah</option>
+      </select>
+    </div>
+    <div id="asal-luar" class="asal-select-wrap">
+      <select id="sel-luar"><option value="">-- Pilih Negara --</option>
+        <option>Australia</option><option>Amerika Serikat</option><option>Belanda</option>
+        <option>China / Tiongkok</option><option>Inggris</option><option>Jepang</option>
+        <option>Jerman</option><option>Korea Selatan</option><option>Malaysia</option>
+        <option>Perancis</option><option>Singapura</option><option>Thailand</option>
+        <option>India</option><option>Rusia</option><option>Italia</option>
+        <option>Spanyol</option><option>Kanada</option><option>Selandia Baru</option>
+        <option>Brazil</option><option>Timor Leste</option><option>Lainnya</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 3. JENIS KELAMIN -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">🚻</span> Jenis Kelamin <span class="req">*</span></div>
+    <div class="pill-group">
+      <div class="pill" id="pill-L" onclick="selectGender('L')"><span class="dot"></span> 👨 Laki-laki</div>
+      <div class="pill" id="pill-P" onclick="selectGender('P')"><span class="dot"></span> 👩 Perempuan</div>
+    </div>
+  </div>
+
+  <!-- 4. USIA -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">🎂</span> Usia <span class="req">*</span></div>
+    <div class="slider-display">
+      <div class="slider-num" id="usiaNum">25</div>
+      <div class="slider-unit">tahun</div>
+    </div>
+    <input type="range" id="usiaRange" min="5" max="85" value="25"
+      oninput="document.getElementById('usiaNum').textContent=this.value; updateSliderFill(this)">
+    <div class="range-marks"><span>5</span><span>20</span><span>35</span><span>50</span><span>65</span><span>85</span></div>
+  </div>
+
+  <!-- 5. PENDIDIKAN -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">🎓</span> Pendidikan Terakhir <span class="req">*</span></div>
+    <div class="pill-group" id="eduGroup">
+      <div class="pill" onclick="selectEdu(this,'SD/Sederajat')"><span class="dot"></span> SD</div>
+      <div class="pill" onclick="selectEdu(this,'SMP/Sederajat')"><span class="dot"></span> SMP</div>
+      <div class="pill" onclick="selectEdu(this,'SMA/SMK/Sederajat')"><span class="dot"></span> SMA/SMK</div>
+      <div class="pill" onclick="selectEdu(this,'Diploma D1–D3')"><span class="dot"></span> Diploma</div>
+      <div class="pill" onclick="selectEdu(this,'Sarjana S1')"><span class="dot"></span> Sarjana S1</div>
+      <div class="pill" onclick="selectEdu(this,'Pascasarjana S2/S3')"><span class="dot"></span> S2/S3</div>
+      <div class="pill" onclick="selectEdu(this,'Tidak Bersekolah')"><span class="dot"></span> Tidak Bersekolah</div>
+    </div>
+  </div>
+
+  <!-- 6. DTW SEBELUM -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">🗺️</span> DTW Sebelum Carangsari <span class="req">*</span></div>
+    <p class="field-helper" style="margin-bottom:14px">Daya Tarik Wisata yang dikunjungi <strong>sebelum</strong> tiba di sini (boleh pilih lebih dari satu)</p>
+    <div class="tag-group" id="dtwSebGroup">
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌊 Tanah Lot</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌅 Uluwatu</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌾 Tegalalang</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏛️ Ubud</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏖️ Kuta / Legian</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🍹 Seminyak</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>⛩️ Pura Besakih</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏝️ Nusa Penida</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🐒 Sangeh</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌋 Kintamani</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌿 Munduk</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🐬 Nusa Lembongan</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏄 Jimbaran</div>
+      <div class="tag" onclick="toggleTagLain(this,'dtwSebLainField')"><span class="check-icon"></span>➕ Lainnya</div>
+    </div>
+    <div class="lain-field" id="dtwSebLainField">
+      <input type="text" id="dtwSebLain" placeholder="Tuliskan nama DTW lainnya...">
+    </div>
+  </div>
+
+  <!-- 7. DTW SESUDAH -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">🧭</span> DTW Setelah Carangsari <span class="req">*</span></div>
+    <p class="field-helper" style="margin-bottom:14px">Daya Tarik Wisata yang akan dikunjungi <strong>setelah</strong> dari sini (boleh pilih lebih dari satu)</p>
+    <div class="tag-group" id="dtwSesGroup">
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌊 Tanah Lot</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌅 Uluwatu</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌾 Tegalalang</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏛️ Ubud</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏖️ Kuta / Legian</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🍹 Seminyak</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>⛩️ Pura Besakih</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏝️ Nusa Penida</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🐒 Sangeh</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌋 Kintamani</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🌿 Munduk</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🐬 Nusa Lembongan</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏄 Jimbaran</div>
+      <div class="tag" onclick="toggleTag(this)"><span class="check-icon"></span>🏠 Langsung Pulang</div>
+      <div class="tag" onclick="toggleTagLain(this,'dtwSesLainField')"><span class="check-icon"></span>➕ Lainnya</div>
+    </div>
+    <div class="lain-field" id="dtwSesLainField">
+      <input type="text" id="dtwSesLain" placeholder="Tuliskan nama DTW lainnya...">
+    </div>
+  </div>
+
+  <!-- 8. CATATAN -->
+  <div class="field-card">
+    <div class="field-title"><span class="field-icon">💬</span> Catatan Tambahan</div>
+    <textarea id="catatan" rows="3" placeholder="Komentar, saran, atau pesan untuk kami (opsional)..."></textarea>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-wrap">
+    <h3>Siap Menyimpan Data?</h3>
+    <p>Pastikan semua isian sudah benar sebelum menyimpan</p>
+    <button class="btn-submit" onclick="submitData()">✦ Simpan Data Kunjungan</button>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="ornament-divider"><span>✦</span></div>
+
+  <!-- REKAP -->
+  <div class="section-header">
+    <div class="section-tag">✦ Rekap</div>
+    <h2>Data Kunjungan Tercatat</h2>
+    <p>Seluruh data wisatawan yang telah berhasil disimpan</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-num" id="stTotal">0</div><div class="stat-lbl">Total Wisatawan</div></div>
+    <div class="stat-box"><div class="stat-num" id="stL">0</div><div class="stat-lbl">Laki-laki</div></div>
+    <div class="stat-box"><div class="stat-num" id="stP">0</div><div class="stat-lbl">Perempuan</div></div>
+    <div class="stat-box"><div class="stat-num" id="stAge">-</div><div class="stat-lbl">Rata-rata Usia</div></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn-tool" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn-tool" onclick="clearAll()">🗑 Hapus Semua</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Nama</th><th>Asal</th><th>JK</th><th>Usia</th>
+          <th>Pendidikan</th><th>DTW Sebelum</th><th>DTW Sesudah</th><th>Waktu</th>
+        </tr>
+      </thead>
+      <tbody id="tBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastMsg">Tersimpan!</span>
+</div>
+
+<script>
+let records = [];
+let currentRegion = 'bali';
+let selectedGender = '';
+let selectedEdu = '';
+
+function switchRegion(r, el) {
+  document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.asal-select-wrap').forEach(w => w.classList.remove('show'));
+  document.getElementById('asal-' + r).classList.add('show');
+  currentRegion = r;
+}
+
+function getAsal() {
+  const sel = document.getElementById('sel-' + currentRegion);
+  return sel ? sel.value : '';
+}
+
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('pill-L').classList.toggle('active', g === 'L');
+  document.getElementById('pill-P').classList.toggle('active', g === 'P');
+}
+
+function selectEdu(el, val) {
+  document.querySelectorAll('#eduGroup .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  selectedEdu = val;
+}
+
+function updateSliderFill(el) {
+  const pct = (el.value - el.min) / (el.max - el.min) * 100;
+  el.style.background = `linear-gradient(to right, #C8872A ${pct}%, #F0E6D0 ${pct}%)`;
+}
+updateSliderFill(document.getElementById('usiaRange'));
+
+function toggleTag(el) {
+  el.classList.toggle('active');
+  el.querySelector('.check-icon').textContent = el.classList.contains('active') ? '✓' : '';
+}
+
+function toggleTagLain(el, fieldId) {
+  el.classList.toggle('active');
+  el.querySelector('.check-icon').textContent = el.classList.contains('active') ? '✓' : '';
+  document.getElementById(fieldId).classList.toggle('show', el.classList.contains('active'));
+}
+
+function getActiveTags(groupId) {
+  return [...document.querySelectorAll('#' + groupId + ' .tag.active')]
+    .map(t => t.textContent.replace('✓','').trim())
+    .filter(t => !t.includes('➕'));
+}
+
+function validate() {
+  if (!document.getElementById('nama').value.trim()) { showToast('⚠️','Nama lengkap wajib diisi!'); return false; }
+  if (!getAsal()) { showToast('⚠️','Daerah asal wajib dipilih!'); return false; }
+  if (!selectedGender) { showToast('⚠️','Jenis kelamin wajib dipilih!'); return false; }
+  if (!selectedEdu) { showToast('⚠️','Pendidikan terakhir wajib dipilih!'); return false; }
+  if (getActiveTags('dtwSebGroup').length === 0) { showToast('⚠️','Pilih minimal 1 DTW sebelumnya!'); return false; }
+  if (getActiveTags('dtwSesGroup').length === 0) { showToast('⚠️','Pilih minimal 1 DTW sesudahnya!'); return false; }
+  return true;
+}
+
+function submitData() {
+  if (!validate()) return;
+
+  let dtwSeb = getActiveTags('dtwSebGroup');
+  let dtwSes = getActiveTags('dtwSesGroup');
+  const sebLain = document.getElementById('dtwSebLain').value.trim();
+  const sesLain = document.getElementById('dtwSesLain').value.trim();
+
+  // Check if "Lainnya" tag is selected and append text
+  const sebHasLain = [...document.querySelectorAll('#dtwSebGroup .tag.active')].some(t => t.textContent.includes('➕'));
+  const sesHasLain = [...document.querySelectorAll('#dtwSesGroup .tag.active')].some(t => t.textContent.includes('➕'));
+  if (sebHasLain && sebLain) dtwSeb.push(sebLain);
+  if (sesHasLain && sesLain) dtwSes.push(sesLain);
+
+  records.push({
+    nama: document.getElementById('nama').value.trim(),
+    asal: getAsal(),
+    gender: selectedGender,
+    usia: parseInt(document.getElementById('usiaRange').value),
+    pendidikan: selectedEdu,
+    dtwSeb: dtwSeb.join(', '),
+    dtwSes: dtwSes.join(', '),
+    catatan: document.getElementById('catatan').value.trim(),
+    waktu: new Date().toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+  });
+
+  renderTable();
+  resetForm();
+  showToast('✅','Data kunjungan berhasil disimpan!');
+  setTimeout(() => document.querySelector('.ornament-divider').scrollIntoView({behavior:'smooth'}), 500);
+}
+
+function resetForm() {
+  document.getElementById('nama').value = '';
+  document.getElementById('catatan').value = '';
+  document.getElementById('dtwSebLain').value = '';
+  document.getElementById('dtwSesLain').value = '';
+  selectedGender = '';
+  selectedEdu = '';
+  document.getElementById('pill-L').classList.remove('active');
+  document.getElementById('pill-P').classList.remove('active');
+  document.querySelectorAll('#eduGroup .pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('usiaRange').value = 25;
+  document.getElementById('usiaNum').textContent = '25';
+  updateSliderFill(document.getElementById('usiaRange'));
+  document.querySelectorAll('.tag').forEach(t => { t.classList.remove('active'); t.querySelector('.check-icon').textContent = ''; });
+  document.getElementById('dtwSebLainField').classList.remove('show');
+  document.getElementById('dtwSesLainField').classList.remove('show');
+  document.querySelectorAll('.asal-select-wrap select').forEach(s => s.value = '');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('tBody');
+  if (!records.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="no-data"><div class="no-icon">📋</div>Belum ada data kunjungan</td></tr>`;
+    updateStats(); return;
+  }
+  tbody.innerHTML = records.map((r,i) => `
+    <tr>
+      <td><strong>${i+1}</strong></td>
+      <td><strong>${r.nama}</strong></td>
+      <td>${r.asal}</td>
+      <td><span class="badge badge-${r.gender.toLowerCase()}">${r.gender==='L'?'👨 L':'👩 P'}</span></td>
+      <td>${r.usia} thn</td>
+      <td style="font-size:12.5px">${r.pendidikan}</td>
+      <td style="font-size:12px;max-width:130px">${r.dtwSeb}</td>
+      <td style="font-size:12px;max-width:130px">${r.dtwSes}</td>
+      <td style="font-size:11.5px;color:var(--muted)">${r.waktu}</td>
+    </tr>
+  `).join('');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('stTotal').textContent = records.length;
+  document.getElementById('stL').textContent = records.filter(r=>r.gender==='L').length;
+  document.getElementById('stP').textContent = records.filter(r=>r.gender==='P').length;
+  document.getElementById('stAge').textContent = records.length
+    ? Math.round(records.reduce((s,r)=>s+r.usia,0)/records.length) : '-';
+}
+
+function exportCSV() {
+  if (!records.length) { showToast('⚠️','Tidak ada data untuk diekspor!'); return; }
+  const hdr = ['No','Nama','Asal','JK','Usia','Pendidikan','DTW Sebelum','DTW Sesudah','Catatan','Waktu'];
+  const rows = records.map((r,i)=>[
+    i+1,r.nama,r.asal,r.gender==='L'?'Laki-laki':'Perempuan',
+    r.usia,r.pendidikan,r.dtwSeb,r.dtwSes,r.catatan,r.waktu
+  ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[hdr.join(','),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='data-kunjungan-carangsari.csv';
+  a.click();
+  showToast('📥','File CSV berhasil diunduh!');
+}
+
+function clearAll() {
+  if (!records.length) return;
+  if (confirm('Hapus semua data kunjungan?\nTindakan ini tidak dapat dibatalkan.')) {
+    records = []; renderTable(); showToast('🗑','Semua data telah dihapus');
+  }
+}
+
+function showToast(icon, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+renderTable();
+</script>
+</body>
+</html>
